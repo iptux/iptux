@@ -1,2 +1,3 @@
 cmdHelp.bat		get cmd's command help infomation
 			( it's a good tourial of cmd )
+NewLink.bat		create cmd style "shortcut"

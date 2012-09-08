@@ -3,15 +3,15 @@ SetLocal EnableDelayedExpansion
 
 
 REM NewLink.bat
-REM �����������µĿ�ݷ�ʽ��.bat�ļ���
+REM 创建命令行下的快捷方式（.bat文件）
 REM
 REM licence: GNU GPL 2.0
-REM �汾: 0.11
-REM ����: Tommy(seed12@163.com)
+REM 版本: 0.11
+REM 作者: Tommy(seed12@163.com)
 REM
 REM TODO:
-REM   ��黷������ %path%
-REM   �� start ���������߼�
+REM   检查环境变量 %path%
+REM   简化 start 变量生成逻辑
 REM
 REM Change Log:
 REM Update: 2010-09-16 22:39 (from v0.10)
@@ -19,100 +19,100 @@ REM   1. never use 'exit' in outfile
 REM   2. add 'generate' information in outfile
 REM   3. backup logfile in -r option.
 REM
-REM ����: 2010-01-03 02:26 (from v0.09)
-REM   1. �޸��� -d ѡ��ʧЧ�����⡣
+REM 升级: 2010-01-03 02:26 (from v0.09)
+REM   1. 修复了 -d 选项失效的问题。
 REM
-REM ������2010-01-02 22:31 (from v0.08)
-REM   1. ��ע�ͣ��������Ӣ�ĸ�Ϊ���ģ��������˲���ע�͡�
-REM   2. ���� -r ѡ�
-REM   3. �����˳����� %exit% (�ɹ� -r ѡ��ʹ��)��
+REM 升级：2010-01-02 22:31 (from v0.08)
+REM   1. 将注释，输出等由英文改为中文，并添加了部分注释。
+REM   2. 增加 -r 选项。
+REM   3. 设置退出代码 %exit% (可供 -r 选项使用)。
 REM
-REM ����: 2009-12-30 00:02 (from v0.07)
-REM   1. ������� 'SetLocal' �� 'EndLocal' �����Է�ֹ���� %prog% ����������
-REM   2. Vim �� .bat(evim, gview, gvim, gvimdiff, view, vim, vimdiff, vimtutor) ������v7.2 (���Թٷ���װ��)��
+REM 升级: 2009-12-30 00:02 (from v0.07)
+REM   1. 输出增加 'SetLocal' 和 'EndLocal' 命令以防止产生 %prog% 环境变量。
+REM   2. Vim 的 .bat(evim, gview, gvim, gvimdiff, view, vim, vimdiff, vimtutor) 升级到v7.2 (来自官方安装包)。
 REM
-REM ����: 2009-12-09 19:54 (from v0.06)
-REM   1. ��������־���ԡ���־�ļ��������ָ�ȫ����ݷ�ʽ��
+REM 升级: 2009-12-09 19:54 (from v0.06)
+REM   1. 增加了日志特性。日志文件可用来恢复全部快捷方式。
 REM
-REM ����: 2009-09-06 22:02 (from v0.05)
-REM   1. �� .bat �м�� %prog% �Ƿ���ڡ�
+REM 升级: 2009-09-06 22:02 (from v0.05)
+REM   1. 在 .bat 中检查 %prog% 是否存在。
 REM
-REM ����: 2009-09-05 10:41 (from v0.04)
-REM   1. �޸��� %dirctory% �а����ո�ʱ .bat ������ȷ�����Ĵ���
-REM   2. ������ -d ѡ�
+REM 升级: 2009-09-05 10:41 (from v0.04)
+REM   1. 修复了 %dirctory% 中包含空格时 .bat 不能正确启动的错误。
+REM   2. 增加了 -d 选项。
 REM
-REM ����: 2009-08-24 14:29 (from v0.03)
-REM   1. ������ -o ѡ�
-REM   2. ��ǿ��ѡ��Ĵ�����
+REM 升级: 2009-08-24 14:29 (from v0.03)
+REM   1. 增加了 -o 选项。
+REM   2. 增强了选项的处理。
 REM
-REM ����: 2009-08-23 20:52 (from v0.02)
-REM   1. ��� D:\Bat\ (Ĭ�� .bat ����ļ���)�Ƿ���ڡ�
-REM   2. ���� GUI �������ʼĿ¼(%dirctory%)��
+REM 升级: 2009-08-23 20:52 (from v0.02)
+REM   1. 检查 D:\Bat\ (默认 .bat 输出文件夹)是否存在。
+REM   2. 设置 GUI 程序的起始目录(%dirctory%)。
 REM
-REM ����: 2009-08-23 01:34 (from v0.01)
-REM   1. �ڲ��������ʹ�� "%~1" ��� "%1"��
-REM      �����Ա����� PROGRAME �����ո������ʹ�� '"' ������������ʧ�ܵĴ���
+REM 升级: 2009-08-23 01:34 (from v0.01)
+REM   1. 在参数检查中使用 "%~1" 替代 "%1"。
+REM      此特性避免了 PROGRAME 包含空格而必须使用 '"' 而产生的启动失败的错误。
 REM
-REM ����: 2009-08-22 23:08 �汾v0.01
+REM 创建: 2009-08-22 23:08 版本v0.01
 
 
-REM Ԥ�������
-REM ���ַ���
+REM 预定义变量
+REM 空字符串
 Set empty=
 REM will be 'start "" /D"DIRECTORY"' if GUI application
 Set start=
-REM ���ÿ�ݷ�ʽ�ĵط���Ĭ��Ϊ��ǰ�ļ��У�v0.08ǰĬ��ΪD:\Bat\��
+REM 放置快捷方式的地方（默认为当前文件夹，v0.08前默认为D:\Bat\）
 Set dir=%~dp0
-REM ��־�ļ���Ĭ��ΪNewLink.log��
+REM 日志文件（默认为NewLink.log）
 Set log=%~dpn0.log
-REM �ű��������������Ϣʱʹ��
+REM 脚本名，输出错误信息时使用
 Set my=%~nx0
-REM �汾��Ϣ
+REM 版本信息
 Set version=0.11
-REM Ŀ���ļ�
+REM 目标文件
 Set prog=
-REM �˳����� 0-���� 1-�����в������� 2-��������
+REM 退出代码 0-正常 1-命令行参数错误 2-其他错误
 Set exit=0
 
 :: Echo %path% | Findstr /i "%dir%">nul
 :: if ErrorLevel 1 (
-:: 	Echo %my%: ���棺%dir% ���� %%path%% �����У�����������´���
-:: 	Echo 'XXX' �����ڲ����ⲿ���Ҳ���ǿ����еĳ�����������ļ���
+:: 	Echo %my%: 警告：%dir% 不在 %%path%% 变量中，可能造成如下错误：
+:: 	Echo 'XXX' 不是内部或外部命令，也不是可运行的程序或批处理文件。
 :: )
 
-REM ���������ѡ��
+REM 检查命令行选项
 if "%~1" EQU "%empty%" Goto USAGE
 
 :LOOP
-REM ���Ͼ�Ĳ�ͬ�ǣ��˴�ȫ��ѡ���Ѿ�������
+REM 与上句的不同是：此处全部选项已经检查完毕
 if "%~1" EQU "%empty%" Goto START
 
-REM ��ʾ����
+REM 显示帮助
 if /I "%~1" EQU "--help" Goto USAGE
 if /I "%~1" EQU "-h" Goto USAGE
 if /I "%~1" EQU "/?" Goto USAGE
 
-REM ��ʾ�汾��Ϣ
+REM 显示版本信息
 if /I "%~1" EQU "--version" Goto VERSION
 if /I "%~1" EQU "-v" Goto VERSION
 
-REM ѡ�� -g �Ĵ���
+REM 选项 -g 的处理
 if /I "%~1" EQU "-g" (
 	if "%start%" EQU "%empty%" (
 		Set start=start ""
 		shift
 		Goto LOOP
 	) Else (
-		Echo %my%: ѡ�� -c �� -g ����ͬʱʹ��
+		Echo %my%: 选项 -c 和 -g 不能同时使用
 		Set exit=1
 		Goto EOF
 	)
 )
 
-REM ѡ�� -c �Ĵ���
+REM 选项 -c 的处理
 if /I "%~1" EQU "-c" (
 	if "%start%" NEQ "%empty%" (
-		Echo %my%: ѡ�� -g �� -c ����ͬʱʹ��
+		Echo %my%: 选项 -g 和 -c 不能同时使用
 		Set exit=1
 		Goto EOF
 	)
@@ -121,10 +121,10 @@ if /I "%~1" EQU "-c" (
 	Goto LOOP
 )
 
-REM ѡ�� -o �Ĵ���
+REM 选项 -o 的处理
 if /I "%~1" EQU "-o" (
 	if /I "%~x2" NEQ "%empty%" if /I "%~x2" NEQ ".bat" (
-		Echo %my%: ����ļ�����չ�������� .bat
+		Echo %my%: 输出文件的扩展名必须是 .bat
 		Set exit=1
 		Goto EOF
 	)
@@ -134,18 +134,18 @@ if /I "%~1" EQU "-o" (
 	Goto LOOP
 )
 
-REM ѡ�� -d �Ĵ���
-REM �� MATLAB ����������ʼĿ¼Ӧ����Ϊ %MATLAB%\work
+REM 选项 -d 的处理
+REM 如 MATLAB 等软件的起始目录应设置为 %MATLAB%\work
 if /I "%~1" EQU "-d" (
 	Echo %~2 | Findstr ":">nul && Echo %~2 | Findstr "\\">nul
 	if ErrorLevel 1 (
-		Echo %my%: �Ƿ���ʼĿ¼: %~2
+		Echo %my%: 非法起始目录: %~2
 		Set exit=1
 		Goto EOF
 	)
 	rem if "%dirctory%" EQU "%empty%" Echo %~2 | Set /p dirctory=
 	if not Exist "%~2" (
-		Echo %my%: ��ʼĿ¼: "%~2" ������
+		Echo %my%: 起始目录: "%~2" 不存在
 		Set exit=1
 		Goto EOF
 	)
@@ -155,11 +155,11 @@ if /I "%~1" EQU "-d" (
 	Goto LOOP
 )
 
-REM ѡ�� -r �Ĵ���
+REM 选项 -r 的处理
 if /I "%~1" EQU "-r" (
 	REM if no other option found
 	if "%~2" EQU "%empty%" if "%dirctory%" EQU "%empty%" if "%start%" EQU "%empty%" if "%prog%" EQU "%empty%" if "%outfile%" EQU "%empty%" (
-		if not exist %log% ( Echo %my%: û��ʲô�ɻָ��ġ� ) && Goto EOF
+		if not exist %log% ( Echo %my%: 没有什么可恢复的。 ) && Goto EOF
 
 		REM backup logfile, only backup once a day
 		for /f %%i in ("%date%") do Set backup=%%i
@@ -172,45 +172,45 @@ if /I "%~1" EQU "-r" (
 		del /f /q /a %~dpn0.txt
 		Goto EOF
 	)
-	Echo %my%: -r ѡ��ܺ�����ѡ��ͬʱʹ��
+	Echo %my%: -r 选项不能和其他选项同时使用
 	Set exit=1
 	Goto EOF
 )
 
-REM �������ѡ��
+REM 检查其他选项
 Set tmp=%~1
 if /I "%tmp:~0,1%" EQU "-" (
-	Echo %my%: δ֪ѡ��: %1
+	Echo %my%: 未知选项: %1
 	Set exit=1
 	Goto EOF
 )
 
-REM ���� %1 Ӧ����Ŀ���ļ� PROGRAME
+REM 现在 %1 应该是目标文件 PROGRAME
 if "%prog%" NEQ "%empty%" (
-	Echo %my%: ����Ĳ���: %1
+	Echo %my%: 多余的参数: %1
 	Set exit=1
 	Goto EOF
 )
 
-REM ��Ч·�����
+REM 有效路径检查
 Echo %~1 | Findstr ":">nul && Echo %~1 | Findstr "\\">nul
 if ErrorLevel 1 (
-	Echo %my%: ��Ч������·��: %~1
+	Echo %my%: 无效的完整路径: %~1
 	Set exit=1
 	Goto EOF
 )
 
-REM .exe ��չ�����
+REM .exe 扩展名检查
 if /I "%~x1" NEQ ".exe" (
-	Echo %my%: %1 ����һ�� .exe �ļ�
+	Echo %my%: %1 不是一个 .exe 文件
 	Set exit=1
 	Goto EOF
 )
 
-REM Ŀ���ļ���Ч�Լ��
+REM 目标文件有效性检查
 Set prog=%~dpnx1
 if Not Exist "%prog%" (
-	Echo %my%: Ŀ���ļ� "%prog%" ������
+	Echo %my%: 目标文件 "%prog%" 不存在
 	REM Echo Why would you want to link to a nonexistent file?
 	Set exit=1
 	Goto EOF
@@ -218,10 +218,10 @@ if Not Exist "%prog%" (
 
 if "%outfile%" EQU "%empty%" Set outfile=%dir%%~n1.bat
 Set exe=%~n1
-REM ������ʼĿ¼
+REM 设置起始目录
 if "%dirctory%" NEQ "%empty%" (
 	if "%start%" EQU " " (
-		Echo %my%: ѡ�� -d �� -c ����ͬʱʹ��
+		Echo %my%: 选项 -d 与 -c 不能同时使用
 		Set exit=1
 		Goto EOF
 	)
@@ -229,47 +229,47 @@ if "%dirctory%" NEQ "%empty%" (
 ) else if "%start%" NEQ " " if "%start%" NEQ "%empty%" Set dirctory=%~dp1
 shift
 
-REM ѭ��������в���
+REM 循环检查所有参数
 Goto LOOP
 
 
-REM ���в����Ѽ�����
-REM һ�� ok��׼��������ݷ�ʽ
+REM 所有参数已检查完毕
+REM 一切 ok，准备创建快捷方式
 
 :START
 if "!dirctory!" NEQ "!empty!" Set start=!start! /D"!dirctory!"
 
-REM ��齫����ļ��Ƿ��Ѵ���
+REM 检查将输出文件是否已存在
 if not defined NewLinkForce if Exist %outfile% (
-	Echo %my%: ��ݷ�ʽ %outfile% �Ѿ����ڡ�
+	Echo %my%: 快捷方式 %outfile% 已经存在。
 	Set exit=2
 	Goto EOF
 )
 
 REM This is a buildin feature of cmd.exe
-REM ��ȡ���ں�ʱ��
+REM 获取日期和时间
 REM Date /T | Set date=
 REM Time /T | Set time=
 
-REM v0.09 ������Ŀ¼�Ǵ��ļ�����Ŀ¼���ɲ����
-REM ������Ŀ¼�Ƿ����
+REM v0.09 版后输出目录是此文件所在目录，可不检查
+REM 检查输出目录是否存在
 REM If Not Exist %dir% mkdir %dir%
 
-REM ��ʼ������ݷ�ʽ
+REM 开始创建快捷方式
 REM use > instead of >> will overwrite exist file
 Echo @Echo off> %outfile%
 Echo SetLocal EnableDelayedExpansion>> %outfile%
 Echo.>> %outfile%
-Echo REM ������������ %exe% >> %outfile%
+Echo REM 命令行下启动 %exe% >> %outfile%
 Echo REM>> %outfile%
-REM Echo REM ����: Tommy>> %outfile%
+REM Echo REM 作者: Tommy>> %outfile%
 Echo REM Generated by: %my% %version%>> %outfile%
-Echo REM ʱ��: %date% %time%>> %outfile%
+Echo REM 时间: %date% %time%>> %outfile%
 Echo.>> %outfile%
 Echo Set prog=%prog%>> %outfile%
 Echo.>> %outfile%
 Echo If Not Exist "%%prog%%" (>> %outfile%
-Echo 	Echo %%~nx0: �ļ�������: "%%prog%%">> %outfile%
+Echo 	Echo %%~nx0: 文件不存在: "%%prog%%">> %outfile%
 Echo 	Goto EOF>> %outfile%
 Echo )>> %outfile%
 Echo.>> %outfile%
@@ -280,30 +280,30 @@ Echo EndLocal>> %outfile%
 REM Don't do that
 REM Echo Exit /b>> %outfile%
 Echo.>> %outfile%
-Echo �Ѿ�Ϊ "%prog%" �����˿�ݷ�ʽ��%outfile%
+Echo 已经为 "%prog%" 创建了快捷方式：%outfile%
 Echo %* >> %log%
 Goto EOF
 
 
 :USAGE
 Echo Usage: %~nx0 [OPTION] [PROGRAME]
-Echo �����������µĿ�ݷ�ʽ(.bat�ļ�)
+Echo 创建命令行下的快捷方式(.bat文件)
 Echo.
-Echo   PROGRAME	Ŀ���ļ�������·��
-Echo   -c		ָ�� PROGRAME ��һ�������н���ĳ���(Ĭ��)
-Echo   -d DIR	����ʼĿ¼���ó� DIR (���� -g)
-Echo   -g		ָ�� PROGRAME ��һ��ͼ�ν������
-Echo   -o NAME[.bat]	��������ļ���(i.e. out.bat)
-Echo   -r		����־�ļ��лָ����п�ݷ�ʽ(����������ѡ��ͬʱʹ��)
-Echo   --help	��ʾ������Ϣ
-Echo   --version	��ʾ�汾��Ϣ
+Echo   PROGRAME	目标文件的完整路径
+Echo   -c		指定 PROGRAME 是一个命令行界面的程序(默认)
+Echo   -d DIR	将起始目录设置成 DIR (暗含 -g)
+Echo   -g		指定 PROGRAME 是一个图形界面程序
+Echo   -o NAME[.bat]	设置输出文件名(i.e. out.bat)
+Echo   -r		从日志文件中恢复所有快捷方式(不能与其他选项同时使用)
+Echo   --help	显示帮助信息
+Echo   --version	显示版本信息
 Goto EOF
 
 
 :VERSION
 Echo %~nx0 %version%
-Echo �����������µĿ�ݷ�ʽ(.bat�ļ�)
-Echo Licence: GNU GPL 2.0 (����� license.txt)
+Echo 创建命令行下的快捷方式(.bat文件)
+Echo Licence: GNU GPL 2.0 (具体见 license.txt)
 Goto EOF
 
 
