@@ -33,19 +33,18 @@ class txtReader:
 		self.stop = False
 		self.sound = True
 	def __del__(self):
-		self.save()
 		self.conf.write(open(self.CONFILE, 'wb+'))
-		if self.f:
-			self.f.close()
 	def save(self):
 		if not self.f:
 			return
 		n = self.f.name
 		if not self.conf.has_section(n):
 			self.conf.add_section(n)
-		self.conf.set(n, 'offset', self.f.tell())
-		self.conf.set(n, 'sound', self.sound)
-	def progress(self, name):
+		# add str() to avoid exception on restore progress
+		self.conf.set(n, 'offset', str(self.f.tell()))
+		self.conf.set(n, 'sound', str(self.sound))
+	def restore(self, name):
+		'''restore the progress'''
 		if self.conf.has_section(name):
 			self.f.seek(self.conf.getint(name, 'offset'))
 			self.sound = self.conf.getboolean(name, 'sound')
@@ -99,8 +98,9 @@ class txtReader:
 			while not self.stop:
 				line = self.f.readline()
 				if not line:	# end of file
+					# go to the beginning
 					self.f.seek(0)
-					return
+					break
 				line = line.strip()
 				if not line:	# empty line
 					continue
@@ -112,7 +112,7 @@ class txtReader:
 			self.a.wakeLockRelease()
 	def book(self, fname):
 		self.f = open(fname, 'rb')
-		self.progress(fname)
+		self.restore(fname)
 		self.loop()
 	def choose(self, title, items):
 		'''choose from items'''
@@ -128,6 +128,7 @@ class txtReader:
 			path = os.path.join(self.SHELF, i)
 			if os.path.isfile(path) and path.endswith('.txt'):
 				txt.append(i)
+		txt.sort()
 		r = self.choose('选择书籍', txt)
 		return r and os.path.join(self.SHELF, r) or None
 	def history(self):
@@ -155,9 +156,8 @@ class txtReader:
 	def main(self):
 		while True:
 			b = self.welcome()
-			if b is None:
-				continue
-			self.book(b)
+			if b:
+				self.book(b)
 
 
 if __name__ == '__main__':
