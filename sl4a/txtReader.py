@@ -66,6 +66,7 @@ class txtReader:
 		'''decide continue or not'''
 		if not self.sound:
 			r = self.a.dialogGetResponse()
+			self.a.eventPoll()
 		else:
 			e = self.a.eventPoll()
 			if len(e) == 0:
@@ -106,6 +107,7 @@ class txtReader:
 					continue
 				self.read(line)
 		finally:
+			self.stop = False
 			self.save()
 			self.f.close()
 			self.f = None
