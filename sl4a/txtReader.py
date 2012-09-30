@@ -12,6 +12,8 @@
 #  3. 增加书架功能
 # Update: 2012-09-08 11:54
 #  1. 增加无声阅读模式
+# Update: 2012-09-30 11:03
+#  1. 增加有声重复模式
 
 
 import os
@@ -32,6 +34,7 @@ class txtReader:
 		self.conf.read(self.CONFILE)
 		self.stop = False
 		self.sound = True
+		self.repeat = False
 	def __del__(self):
 		self.conf.write(open(self.CONFILE, 'wb+'))
 	def save(self):
@@ -60,13 +63,13 @@ class txtReader:
 		self.a.dialogCreateAlert(os.path.basename(self.f.name), msg)
 		self.a.dialogSetPositiveButtonText('有声')
 		self.a.dialogSetNeutralButtonText('无声')
-		self.a.dialogSetNegativeButtonText('停止')
+		self.a.dialogSetNegativeButtonText(self.sound and '重复' or '停止')
 		self.a.dialogShow()
 	def handle(self):
 		'''decide continue or not'''
 		if not self.sound:
 			r = self.a.dialogGetResponse()
-			self.a.eventPoll()
+			self.a.eventClearBuffer()
 		else:
 			e = self.a.eventPoll()
 			if len(e) == 0:
@@ -79,7 +82,10 @@ class txtReader:
 			elif result == 'neutral':
 				self.sound = False
 			elif result == 'negative':
-				self.stop = True
+				# repeat in sound mode
+				if self.sound: self.repeat = True
+				# stop in silent mode
+				else: self.stop = True
 		elif r.has_key('canceled'):
 			self.stop = True
 		else:
@@ -106,6 +112,10 @@ class txtReader:
 				if not line:	# empty line
 					continue
 				self.read(line)
+				# support sound repeat mode
+				while self.repeat:
+					self.repeat = False
+					self.read(line)
 		finally:
 			self.stop = False
 			self.save()
