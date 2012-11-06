@@ -8,3 +8,6 @@ DroidUi.py		wrapper library for FullScreenUi
 DroidConstants.py	constants used by DroidUi.py
 DroidDialog.py		dialog wrapper library for UiFacade
 sudoku.py		a simple sudoku game using DroidUi
+Killer.py		try manage running package
+KeyEvent.py		show Key Event
+FlashLight.py		a white screen that make the world brighter
