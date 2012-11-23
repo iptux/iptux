@@ -40,13 +40,17 @@ def getSmsFp(contact):
 		return sms_fp[name]
 	except:
 		fname = contact['name'] + '.txt'
-		# file name must be utf-8 encoded
-		fp = open(fname.encode('utf-8'), 'w+')
+		fname = fname.encode('utf-8')
+		if os.path.exists(fname):
+			fp = open(fname, 'a')
+		else:
+			# file name must be utf-8 encoded
+			fp = open(fname, 'w+')
+			# UnicodeDecodeError
+			#print >>fp, 'name: %s\nnumber: %s\n' % (name.encode('gb18030'), contact['number'])
+			print >>fp, 'name: %s' % name.encode('gb18030')
+			print >>fp, 'number: %s\n' % contact['number']
 		sms_fp[name] = fp
-		# UnicodeDecodeError
-		#print >>fp, 'name: %s\nnumber: %s\n' % (name.encode('gb18030'), contact['number'])
-		print >>fp, 'name: %s' % name.encode('gb18030')
-		print >>fp, 'number: %s\n' % contact['number']
 		return fp
 
 
