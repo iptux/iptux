@@ -1,0 +1,5 @@
+nightly.sh	start nightly build
+reload.sh	reload bootable image to android device
+repack.sh	pack a dir to a bootable image
+unpack.sh	unpack a bootable image to dir
+
