@@ -14,11 +14,11 @@ function reload() {
 
 	# if a dir, pack and then load it
 	if [ -d "${image}" ] ; then
-		./repack $image
+		./repack.sh $image
 		fastboot boot "new${image}.img"
 	# if a file, just load it
 	elif [ -f "${image}" ] ; then
-		fastboot "${image}"
+		fastboot boot "${image}"
 	fi
 }
 
