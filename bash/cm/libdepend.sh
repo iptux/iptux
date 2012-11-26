@@ -14,7 +14,7 @@ libs=cm-9-20121125-mione_plus.libs.txt
 function depend() {
 	[ -z "$1" ] && return
 
-	readelf -d $1 | grep -o -E '\[\w+\.so\]' | sed -e 's,\[,, ; s,\],,' | sort | diff $libs - | sed -n -e '/^> / { s,,, ; p }' | grep -v `basename $1` | xargs echo $1:
+	readelf -d $1 | sed -n -r -e '/NEEDED/ { s,^.*\[(.+\.so)\].*$,\1, ; p }' | sort | diff $libs - | sed -n -e '/^> / { s,,, ; p }' | xargs echo $1:
 }
 
 function depend_orig () {
