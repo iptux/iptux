@@ -1,3 +1,5 @@
+Scripts used when porting Cyanogenmod to my device
+
 nightly.sh	start nightly build
 reload.sh	reload bootable image to android device
 repack.sh	pack a dir to a bootable image
@@ -5,5 +7,4 @@ unpack.sh	unpack a bootable image to dir
 adjusttime.sh	adjust time for android device
 libdepend.sh	get library's dependency
 mypush.sh	push files to android device
-
 
