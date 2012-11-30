@@ -11,6 +11,8 @@ import sl4a
 import os, sys
 from datetime import datetime
 
+# feel free to change encoding for your locale
+encoding = 'gb18030'
 
 # number to contact map
 contacts = {}
@@ -47,8 +49,8 @@ def getSmsFp(contact):
 			# file name must be utf-8 encoded
 			fp = open(fname, 'w+')
 			# UnicodeDecodeError
-			#print >>fp, 'name: %s\nnumber: %s\n' % (name.encode('gb18030'), contact['number'])
-			print >>fp, 'name: %s' % name.encode('gb18030')
+			#print >>fp, 'name: %s\nnumber: %s\n' % (name.encode(encoding), contact['number'])
+			print >>fp, 'name: %s' % name.encode(encoding)
 			print >>fp, 'number: %s\n' % contact['number']
 		sms_fp[name] = fp
 		return fp
@@ -61,7 +63,7 @@ def sms(id):
 	stamp = int(m['date'])
 	print >>fp, 'stamp: %i' % stamp
 	print >>fp, 'date: %s' % datetime.fromtimestamp(stamp/1000.0).strftime('%Y%m%d%H%M%S')
-	print >>fp, 'body: %s\n' % m['body'].encode('gb18030')
+	print >>fp, 'body: %s\n' % m['body'].encode(encoding)
 
 
 def sms_all():
