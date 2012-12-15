@@ -40,7 +40,6 @@ redexandpack () {
 
 	echo redex: "$1/smali"
 	smali --output "$1/classes.dex" -- "$1/smali"
-	[ ! -e "$1/classes.dex" ] && return
 
 	echo pack: "out/${1}b.apk"
 	cp --force "${1}.apk" "out/${1}b.zip"
