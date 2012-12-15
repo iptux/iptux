@@ -10,6 +10,7 @@ Requirement
 
 * have [Java](http://www.java.com/getjava/) installed
 * Download [apktool](https://code.google.com/p/android-apktool/), place _apktool.jar_ and _aapt_ in this folder
+* Download [smali](https://code.google.com/p/smali/), place _baksmali.jar_ and _smali.jar_ in this folder
 * place signapk stuff _signapk.jar_, _testkey.pk8_ and _testkey.x509.pem_ in _signapk_ folder
   * if you use another CERT, you need adjust _signapk.sh_
 
