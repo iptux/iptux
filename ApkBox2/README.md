@@ -10,7 +10,7 @@ Requirement
 
 * have [Java](http://www.java.com/getjava/) installed
 * Download [apktool](https://code.google.com/p/android-apktool/), place _apktool.jar_ and _aapt_ in this folder
-* Download [signapk](https://code.google.com/p/signapk/), place _signapk.jar_, _testkey.pk8_ and _testkey.x509.pem_ in _signapk_ folder
+* place signapk stuff _signapk.jar_, _testkey.pk8_ and _testkey.x509.pem_ in _signapk_ folder
   * if you use another CERT, you need adjust _signapk.sh_
 
 

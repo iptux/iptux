@@ -9,8 +9,9 @@
 Requirement
 ------------
 
+* have [Java](http://www.java.com/getjava/) installed
 * Download [apktool](https://code.google.com/p/android-apktool/), place _apktool.jar_ and _aapt.exe_ in this folder
-* Download [signapk](https://code.google.com/p/signapk/), place _signapk.jar_, _testkey.pk8_ and _testkey.x509.pem_ in _signapk_ folder
+* place signapk stuff _signapk.jar_, _testkey.pk8_ and _testkey.x509.pem_ in _signapk_ folder
   * if you use another CERT, you need adjust _signapk.bat_
 
 
@@ -24,5 +25,5 @@ Usage
   * take a look at commented lines and the console output
 * more editing...
 * repack using `apk file-name-without-suffix`
-* if packed succ, _install out/file-name-without-suffixbs.apk_ and have a test
+* if packed succ, install _out/file-name-without-suffixbs.apk_ and have a test
 
