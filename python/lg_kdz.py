@@ -213,6 +213,7 @@ class LG_KDZ(Tkinter.Frame):
 		self.imeiButton.pack(side = Tkinter.LEFT, ipadx = 3)
 
 		self.result = Tkinter.Text(self, height = 15)
+		self.result.config(state = Tkinter.DISABLED)
 		font = tkFont.Font(size = 10)
 		self.result.tag_configure('output', font = font)
 
@@ -238,8 +239,10 @@ class LG_KDZ(Tkinter.Frame):
 		self.modelMenu = Tkinter.OptionMenu(self.swFrame, self.model, *models, command = self.modelGet)
 		self.modelMenu.grid(row = 1, column = 1, sticky = Tkinter.EW)
 	def setResult(self, text):
+		self.result.config(state = Tkinter.NORMAL)
 		self.result.insert(Tkinter.END, text + '\n', 'output')
 		self.result.see(Tkinter.END)
+		self.result.config(state = Tkinter.DISABLED)
 	def imeiGet(self):
 		imei = self.imei.get()
 		if not imei:
@@ -260,7 +263,7 @@ class LG_KDZ(Tkinter.Frame):
 		tkMessageBox.showinfo('lg_kdz.py - About', '''Get Latest LGE Cell Phone Firmware
 
 Author: Tommy Alex
-Email: iptux#gmail.com
+Email: iptux7#gmail.com
 Date: 2012-12-17 04:47''')
 	def cli(self):
 		tkMessageBox.showinfo('lg_kdz.py - CLI interface', '''lg_kdz.py - Get Latest LGE Cell Phone Firmware
