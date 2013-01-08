@@ -1,0 +1,37 @@
+         A Recommended Directory Layout for CyanogenMod Building
+
+              Alex.wang(iptux7#gmail.com)  2013-01-09 04:54
+
+
+CyanogenMod/
+|-- projects                              # all sources repositories
+|-- repo                                  # `repo' tool repository
+|-- gingerbread                           # `gingerbread' branch
+|   |-- .repo
+|   |   |-- local_manifest.xml            # local repositories defination
+|   |   |-- projects -> ../../projects/   # symlink to all project repositories
+|   |   `-- repo -> ../../repo/           # symlink to `repo' tool repository
+|   |-- android
+|   |-- device                            # device folders
+|   |   `-- generic
+|   |       `-- goldfish
+|   `-- out
+|       `-- target
+|           `-- product
+|               `-- goldfish              # `goldfish' device output
+|
+|
+|-- ics                                   # `ics' branch
+|   |-- .repo
+|   |   |-- local_manifest.xml            # same as above
+|   |   |-- projects -> ../../projects/
+|   |   `-- repo -> ../../repo/
+|   |-- android
+|   |-- device
+|   `-- out
+|
+|-- jellybean                             # `jellybean' branch and devices
+|-- cm-10.1                               # `cm-10.1' branch and devices
+|-- ...(more)
+
+
