@@ -7,4 +7,5 @@ unpack.sh	unpack a bootable image to dir
 adjusttime.sh	adjust time for android device
 libdepend.sh	get library's dependency
 mypush.sh	push files to android device
+services.sh	extract services infomation from .rc files
 alarm.sh	play sound to alarm me
