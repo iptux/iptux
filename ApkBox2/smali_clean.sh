@@ -25,7 +25,7 @@ apkdir=$1
 shift
 
 # backup smali
-[ -n "$1" ] && cp -R "${apkdir}/smali" "${apkdir}/smali.orig"
+[ -n "$1" -a ! -e "${apkdir}/smali.orig" ] && cp -R "${apkdir}/smali" "${apkdir}/smali.orig"
 
 while [ -n "$1" ] ; do
 	classname="$1"
