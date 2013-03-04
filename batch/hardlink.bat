@@ -19,6 +19,12 @@ if not exist "%src%" goto :HELP
 set full_src=%~f1
 set full_dest=%~f2
 
+REM check for same volume
+if not %full_src:~0,1%==%full_dest:~0,1% (
+	echo SOURCE and DEST is not on the same volume: %full_src:~0,1% %full_dest:~0,1%
+	goto :END
+)
+
 REM copy directory structure
 xcopy "%src%" "%dest%" /E /I /Q /T
 
