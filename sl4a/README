@@ -7,4 +7,5 @@ txtReader.py		Read txt file out. Just put text file in /sdcard/book
 python.sh		execute python scripts in sl4a shell
 tcpdump.py		dump network packages
 tcpdump.sh		run tcpdump.py
+headphoto.py		generate my headphoto
 
