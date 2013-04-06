@@ -8,22 +8,20 @@
 
 
 function nightly () {
+	# parm: branch device
 	[ -z "$1" ] && return
+	[ -z "$2" ] && return
 
 	echo remove old build
-	rm -rf "$1/out/target/product/$1"
+	rm -rf "$1/out/target/product/$2"
 
 	echo start sync $1
 	( cd $1 && repo sync -j1 )
 
-	echo start build "$1"
-	( cd $1 && . build/envsetup.sh && brunch $1 )
+	echo start build "$2"
+	( cd $1 && . build/envsetup.sh && brunch $2 )
 }
 
-
-targets="$*"
-[ -z "$targets" ] && targets="p350 mione_plus"
-for target in $targets ; do
-	nightly $target
-done
+# now we use new dir layout in `BuildingDirectoryLayout.txt'
+nightly jellybean mione_plus
 
