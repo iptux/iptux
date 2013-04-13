@@ -22,6 +22,8 @@ function nightly () {
 	( cd $1 && . build/envsetup.sh && brunch $2 )
 }
 
+export LANG=
+
 # now we use new dir layout in `BuildingDirectoryLayout.txt'
 nightly jellybean mione_plus
 
