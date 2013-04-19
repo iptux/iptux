@@ -78,15 +78,12 @@ class LGMobile:
 		if not os.path.exists(self.DIR):
 			os.mkdir(self.DIR)
 		self.host = 'csmg.lgmobile.com:9002'
-		self.http = httplib.HTTPConnection(self.host, timeout = 10)
-		self.swhttp = httplib.HTTPConnection(self.SWHOST, timeout = 10)
-	def __del__(self):
-		self.http.close()
-		self.swhttp.close()
 	def exist(self, url):
-		self.swhttp.request('HEAD', url)
-		resp = self.swhttp.getresponse()
+		h = httplib.HTTPConnection(self.SWHOST, timeout = 10)
+		h.request('HEAD', url)
+		resp = h.getresponse()
 		resp.read()
+		h.close()
 		return resp.status == 200
 	def _kdz(self, model, suffix, v1, v2):
 		# FIXME: older Phone's firmware path format
@@ -97,10 +94,11 @@ class LGMobile:
 		return self._kdz(model, suffix, swversion, swversion2)
 	def get(self, url, **parm):
 		'''HTTP GET request'''
+		url = 'http://%s%s' % (self.host, url)
 		if len(parm):
 			url = '%s?%s' % (url, urllib.urlencode(parm))
-		self.http.request('GET', url)
-		return self.http.getresponse().read()
+		f = urllib.urlopen(url)
+		return f.read()
 	def _getxml(self, url, **parm):
 		elem = ET.fromstring(self.get(url, **parm).strip())
 		if elem.attrib['status'] != 'OK':
