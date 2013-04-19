@@ -68,26 +68,30 @@ class ResponseFail(Exception):
 
 
 class LGMobile:
+	DIR = 'cache'
+	SWHOST = 'csmgdl.lgmobile.com'
 	def __init__(self):
 		self.country = []
 		self.model = {}
 		self.modelsw = {}
 
-		if not os.path.exists('xml'):
-			os.mkdir('xml')
+		if not os.path.exists(self.DIR):
+			os.mkdir(self.DIR)
 		self.host = 'csmg.lgmobile.com:9002'
 		self.http = httplib.HTTPConnection(self.host, timeout = 10)
+		self.swhttp = httplib.HTTPConnection(self.SWHOST, timeout = 10)
 	def __del__(self):
 		self.http.close()
+		self.swhttp.close()
 	def exist(self, url):
-		self.http.request('HEAD', url)
-		resp = self.http.getresponse()
+		self.swhttp.request('HEAD', url)
+		resp = self.swhttp.getresponse()
 		resp.read()
 		return resp.status == 200
 	def _kdz(self, model, suffix, v1, v2):
 		# FIXME: older Phone's firmware path format
-		url = '/swdata/WEBSW/%s/%s/%s/%s.kdz' % (model, suffix, v1, v2)
-		return self.exist(url) and 'http://%s%s' % (self.host, url) or None
+		url = '/swdata/WDLSW/%s/%s/%s/%s.kdz' % (model, suffix, v1, v2)
+		return self.exist(url) and 'http://%s%s' % (self.SWHOST, url) or None
 	def kdz(self, model, suffix, swversion):
 		swversion2 = swversion[0:3] + swversion[3].upper() + swversion[4:]
 		return self._kdz(model, suffix, swversion, swversion2)
@@ -105,10 +109,10 @@ class LGMobile:
 	def getxml(self, fname, url, **parm):
 		'''get xml object'''
 		try:
-			return ET.parse('xml/%s' % fname)
+			return ET.parse('%s/%s' % (self.DIR, fname))
 		except IOError:
 			tree = self._getxml(url, **parm)
-			tree.write('xml/%s' % fname)
+			tree.write('%s/%s' % (self.DIR, fname))
 			return tree
 	def ftp_country_info(self):
 		'''return a country list'''
@@ -127,7 +131,7 @@ class LGMobile:
 		except KeyError: pass
 
 		try:
-			tree = self.getxml('model_list.%s.xml' % country, '/csmg/b2c/client/model_list.jsp', country = country)
+			tree = self.getxml('web_model_list.%s.xml' % country, '/csmg/b2c/client/web_model_list.jsp', country = country)
 			models = [ elem.text for elem in tree.getiterator('model') ]
 		except: models = []
 		self.model[country] = models
