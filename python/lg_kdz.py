@@ -132,7 +132,7 @@ class LGMobile:
 
 		try:
 			tree = self.getxml('web_model_list.%s.xml' % country, '/csmg/b2c/client/web_model_list.jsp', country = country)
-			models = [ elem.text for elem in tree.getiterator('model') ]
+			models = list(set([ elem.text for elem in tree.getiterator('model') ]))
 		except: models = []
 		self.model[country] = models
 		return models
