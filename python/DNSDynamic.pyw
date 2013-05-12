@@ -94,6 +94,12 @@ class DNSDynamic(Tkinter.Frame):
 
 		self.domainFrame = Tkinter.LabelFrame(self, text = u'域名管理')
 
+		self.scrollbar = Tkinter.Scrollbar(self.domainFrame)
+		self.domainList = Tkinter.Text(self.domainFrame, yscrollcommand=self.scrollbar.set, width = 50, state = Tkinter.DISABLED)
+		self.scrollbar.config(command=self.domainList.yview)
+		self.domainList.grid(row = 0, column = 0)
+		self.scrollbar.grid(row = 0, column = 1, sticky = Tkinter.NSEW)
+
 		self.btnFrame = Tkinter.Frame(self.domainFrame)
 		self.addButton = Tkinter.Button(self.btnFrame, text = u'添加域名', command = self.addDomain)
 		self.freshButton = Tkinter.Button(self.btnFrame, text = u'全部刷新', command = self.refreshAll)
@@ -101,21 +107,23 @@ class DNSDynamic(Tkinter.Frame):
 		self.addButton.pack(side = Tkinter.LEFT, ipadx = 5, padx = 5)
 		self.freshButton.pack(side = Tkinter.LEFT, ipadx = 5, padx = 5)
 		self.aboutButton.pack(side = Tkinter.LEFT, ipadx = 5, padx = 5)
-		self.btnFrame.pack()
+		self.btnFrame.grid(row = 1, columnspan = 2)
 
 		self.setFrame.pack()
 		self.domainFrame.pack(fill = Tkinter.X)
 	def addDomain(self, domain = '', ip = ''):
-		frame = DomainFrame(self.domainFrame, domain, ip)
+		frame = DomainFrame(self.domainList, domain, ip)
 		if frame in self.domains:
 			tkMessageBox.showinfo(APP_TITLE + u' - Info', u'域名 %s 已存在' % domain)
 			return
 		self.domains.append(frame)
-		frame.pack(before = self.btnFrame)
+		self.domainList.window_create(Tkinter.END, window = frame)
 	def delDomain(self, e):
 		if e in self.domains:
+			self.domainList.config(state = Tkinter.NORMAL)
+			self.domainList.delete(str(e))
+			self.domainList.config(state = Tkinter.DISABLED)
 			self.domains.remove(e)
-			e.forget()
 			del e
 	def refreshAll(self):
 		if len(self.domains) == 0:
