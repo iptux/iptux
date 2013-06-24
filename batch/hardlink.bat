@@ -29,7 +29,7 @@ REM copy directory structure
 xcopy "%src%" "%dest%" /E /I /Q /T
 
 REM create hardlinks
-for /f %%f in ('dir /s /b /a-d "%src%"') do (
+for /f "delims=" %%f in ('dir /s /b /a-d "%src%"') do (
 	set parm=%%f
 	fsutil hardlink create "!parm:%full_src%=%full_dest%!" "%%f"
 )
