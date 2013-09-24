@@ -58,7 +58,7 @@ class Coursera:
 			os.mkdir(self.DOWNLOAD_DIR)
 		if not os.path.exists(self.course):
 			os.mkdir(self.course)
-		os.system('cd %s && wget --load-cookies=../coursera.txt --no-check-certificate "https://class.coursera.org/%s/lecture/download.mp4?lecture_id=%d"' % (self.DOWNLOAD_DIR, self.course, i))
+		os.system('cd %s && wget --load-cookies=../coursera.txt --no-check-certificate --continue "https://class.coursera.org/%s/lecture/download.mp4?lecture_id=%d"' % (self.DOWNLOAD_DIR, self.course, i))
 		self._rename(i)
 		self.save()
 
