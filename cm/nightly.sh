@@ -23,6 +23,7 @@ function nightly () {
 }
 
 export LANG=
+export USE_CCACHE=1
 
 # now we use new dir layout in `BuildingDirectoryLayout.txt'
 nightly jellybean mione_plus
