@@ -16,7 +16,7 @@ if /i "%~x2" neq ".apk" GOTO :HELP
 
 set dir=%~dp0signapk
 
-java -jar "%dir%\signapk.jar" "%dir%\testkey.x509.pem" "%dir%\testkey.pk8" "%~1" "%~2"
+java -jar "%dir%\signapk.jar" -w "%dir%\testkey.x509.pem" "%dir%\testkey.pk8" "%~1" "%~2"
 GOTO :END
 
 

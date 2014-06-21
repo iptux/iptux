@@ -25,5 +25,5 @@ signed=$2
 
 dir="`dirname $0`/signapk"
 
-java -jar "${dir}/signapk.jar" "${dir}/testkey.x509.pem" "${dir}/testkey.pk8" "${unsigned}" "${signed}"
+java -jar "${dir}/signapk.jar" -w "${dir}/testkey.x509.pem" "${dir}/testkey.pk8" "${unsigned}" "${signed}"
 
