@@ -73,7 +73,7 @@ build () {
 	# is decoded by apktool.jar succ?
 	if [ -e "$1/apktool.yml" ] ; then
 		echo build apk: "out/${1}b.apk"
-		apktool build "$1" "out/${1}b.apk"
+		PATH=.:$PATH apktool build "$1" "out/${1}b.apk"
 	else
 		redexandpack $1
 	fi
