@@ -1,0 +1,9 @@
+fonts-noto-cjk
+sudo add-apt-repository ppa:createsc/3beol
+
+fluxgui
+sudo add-apt-repository ppa:kilian/f.lux
+
+bcompare
+deb http://www.scootersoftware.com/ stable non-free
+
