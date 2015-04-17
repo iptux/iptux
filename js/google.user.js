@@ -19,7 +19,13 @@
   var observer = new WebKitMutationObserver(function() {
     var links = document.querySelectorAll('a[onmousedown]')
     makeArray(links).forEach(function(link) {
-      link.onmousedown = null
+      link.attributes.removeNamedItem('onmousedown')
+      link.setAttribute('style', 'display: none;');
+      var a = document.createElement('a');
+      a.setAttribute('target', '_blank');
+      a.setAttribute('href', link.getAttribute('href'));
+      a.innerHTML = link.innerHTML;
+      link.parentNode.insertBefore(a, link);
     })
   })
 
