@@ -1,12 +1,14 @@
 #!/bin/bash
 #
 # checkout.sh
-# checkout a branch of a git repo
+# checkout a branch or a tag of a bare git repo to another dir
+# all these dir reference to the same repo
 #
 # Author: Alex.wang
 # Create: 2014-05-05 22:15
 
 
+# I'm using it for linux kernel
 REPO=linux.git
 
 
