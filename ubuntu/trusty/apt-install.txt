@@ -370,6 +370,7 @@ pngcrush
 putty
 putty-tools
 python-appindicator
+python-doc
 python-eyed3
 python-glade2
 python-nautilus
