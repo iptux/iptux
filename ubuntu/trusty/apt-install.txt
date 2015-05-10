@@ -48,6 +48,8 @@ flashplugin-installer
 flex
 fluxgui
 fonts-notos
+fonts-wqy-microhei
+fonts-wqy-zenhei
 g++
 g++-4.8
 g++-4.8-multilib
