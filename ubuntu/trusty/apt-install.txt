@@ -46,14 +46,15 @@ fancontrol
 fastjar
 flashplugin-installer
 flex
-fluxgui
-fonts-notos
+fonts-noto
+fonts-noto-cjk
 fonts-wqy-microhei
 fonts-wqy-zenhei
 g++
 g++-4.8
 g++-4.8-multilib
 g++-multilib
+gawk
 gcc-4.8-multilib
 gcc-multilib
 gconf-defaults-service
@@ -339,10 +340,6 @@ libyaml-0-2
 libzbar0
 libzvbi-common
 libzvbi0
-linux-headers-3.16.0-31
-linux-headers-3.16.0-31-generic
-linux-image-3.16.0-31-generic
-linux-image-extra-3.16.0-31-generic
 lm-sensors
 lrzsz
 lua5.1
@@ -401,6 +398,7 @@ sqlite
 sqlitebrowser
 squashfs-tools
 ssh
+subversion
 tidy
 tofrodos
 tsconf
@@ -430,6 +428,7 @@ vsftpd
 wipe
 wireshark
 wireshark-common
+xfonts-wqy
 xsltproc
 zbar-tools
 zlib1g-dev
