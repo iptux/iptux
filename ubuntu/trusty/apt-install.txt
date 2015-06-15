@@ -14,6 +14,7 @@ avidemux-plugins-common
 avidemux-plugins-gtk
 binfmt-support
 bison
+bluez-tools
 browser-plugin-vlc
 build-essential
 ca-certificates-java
@@ -29,6 +30,7 @@ default-jdk
 default-jre
 default-jre-headless
 dkms
+dnsmasq
 dpkg-dev
 eclipse
 eclipse-cdt
@@ -44,6 +46,7 @@ expect
 eyed3
 fancontrol
 fastjar
+flac
 flashplugin-installer
 flex
 fonts-noto
@@ -349,6 +352,7 @@ maxima
 meld
 mencoder
 minicom
+mpg123
 mplayer
 mplayer-gui
 mplayer-skins
@@ -358,6 +362,8 @@ openjdk-7-jdk
 openjdk-7-jre
 openjdk-7-jre-headless
 openjdk-7-jre-lib
+openssh-blacklist
+openssh-blacklist-extra
 openssh-server
 openssh-sftp-server
 p7zip
@@ -425,6 +431,7 @@ vlc-plugin-notify
 vlc-plugin-pulse
 vlc-plugin-vlsub
 vsftpd
+whois
 wipe
 wireshark
 wireshark-common
