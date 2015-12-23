@@ -35,3 +35,21 @@ CyanogenMod/
 |-- ...(more)
 
 
+You may need to apply the following patch for `repo` tool to make above works
+
+```diff
+diff --git a/manifest_xml.py b/manifest_xml.py
+index 3ac607e..05d9f8f 100644
+--- a/manifest_xml.py
++++ b/manifest_xml.py
+@@ -840,7 +840,7 @@ class XmlManifest(object):
+     else:
+       worktree = os.path.join(self.topdir, path).replace('\\', '/')
+       gitdir = os.path.join(self.repodir, 'projects', '%s.git' % path)
+-      objdir = os.path.join(self.repodir, 'project-objects', '%s.git' % name)
++      objdir = gitdir
+     return relpath, worktree, gitdir, objdir
+ 
+   def GetProjectsWithName(self, name):
+```
+
