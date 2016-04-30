@@ -20,7 +20,7 @@ images="$*"
 [ -z "$images" ] && images="boot recovery"
 
 for image in $images ; do
-	repack $image
+	repack "${image%\.*}"
 done
 
 

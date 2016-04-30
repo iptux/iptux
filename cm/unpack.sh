@@ -22,7 +22,7 @@ images="$*"
 [ -z "$images" ] && images="boot recovery"
 
 for image in $images ; do
-	unpack $image
+	unpack "${image%\.*}"
 done
 
 

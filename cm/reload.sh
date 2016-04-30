@@ -24,6 +24,6 @@ function reload() {
 
 
 parm="$1"
-[ -z "$parm" ] && parm=boot
-reload "$parm"
+[ -z "$parm" ] && parm=boot.img
+reload "${parm%\.*}"
 
