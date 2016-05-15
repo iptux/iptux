@@ -3,3 +3,4 @@ chromium.sh	Download lastest chromium
 checkout.sh	multi branch development with same repo
 dkms.sh	Build all dkms modules
 signapk	signing apk with keystore
+detach	safely remove a USB device using udisksctl

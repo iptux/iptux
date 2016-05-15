@@ -1,0 +1,36 @@
+#!/bin/bash
+#
+# detach
+# safely remove a USB device
+#
+# Author: Alex.wang
+# Create: 2016-04-09 01:56
+
+
+usage() {
+	cat <<EOF
+`basename $0`: safely detach a USB device
+EOF
+}
+
+detach() {
+	local -r DISK="$1"
+	[ -b "${DISK}" ] || return 0
+
+	local partition
+	# unmount all mounted partition
+	mount | \
+	grep -E -o "${DISK}p?[0-9]*" | \
+	while read partition ; do
+		udisksctl unmount --block-device "${partition}"
+	done
+
+	udisksctl power-off --block-device "${DISK}"
+}
+
+if [ -b "$1" ] ; then
+	sync
+	detach "$1"
+else
+	usage
+fi
