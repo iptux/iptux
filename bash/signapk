@@ -71,11 +71,20 @@ signapk() {
 	set +e
 }
 
+showcert() {
+	local in="$1"
+	[ -e "${in}" ] || return 1
+
+	echo "${in}"
+	keytool -printcert -jarfile "${in}"
+}
+
 showhelp() {
 	cat <<EOF
 `basename $0`: signing a apk
 Usage: `basename $0` [options...] apk
 	-h		show this help
+	-v		show certificate details of a signed apk
 	-k KEYNAME	use keystore KEYNAME to sign apk
 			keystore files is stored in ${KEYSTOREDIR} directory
 	-t TSAURL	location of the Timestamping Authority (for jarsigner)
@@ -89,7 +98,8 @@ EOF
 main() {
 	local opt
 	local key
-	while getopts "a:hk:nt:z:" opt ; do
+	local cert
+	while getopts "a:hk:nt:vz:" opt ; do
 		case "${opt}" in
 		a)
 			ALIGN="${opt}"
@@ -103,6 +113,9 @@ main() {
 		t)
 			TSAURL="${opt}"
 			;;
+		v)
+			cert=yes
+			;;
 		z)
 			ZIPALIGN="${opt}"
 			;;
@@ -115,6 +128,13 @@ main() {
 	shift "$[$OPTIND - 1]"
 
 	[ "$#" -eq 0 ] && showhelp
+
+	if [ -n "${cert}" ] ; then
+		for f in "$@" ; do
+			showcert "${f}"
+		done
+		exit 0
+	fi
 
 	setkeystore "${key}"
 	for f in "$@" ; do
