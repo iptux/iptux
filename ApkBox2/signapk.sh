@@ -23,7 +23,7 @@ signed=$2
 [ ! -e "${unsigned}" ] && echo file not exist: "${unsigned}" && exit 1
 [ -z "${signed}" ] && signed="${unsigned%\.*}s.${unsigned##*\.}"
 
-dir="`dirname $0`/signapk"
+dir="`dirname $0`/security"
 
-java -jar "${dir}/signapk.jar" -w "${dir}/testkey.x509.pem" "${dir}/testkey.pk8" "${unsigned}" "${signed}"
+java -jar "${dir}/../jar/signapk.jar" -w "${dir}/testkey.x509.pem" "${dir}/testkey.pk8" "${unsigned}" "${signed}"
 
