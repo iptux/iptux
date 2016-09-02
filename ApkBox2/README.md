@@ -8,22 +8,25 @@
 Requirement
 ------------
 
-* have [Java](http://www.java.com/getjava/) installed
-* Download [apktool](https://code.google.com/p/android-apktool/), place _apktool.jar_ and _aapt_ in this folder
-* Download [smali](https://code.google.com/p/smali/), place _baksmali.jar_ and _smali.jar_ in this folder
-* place signapk stuff _signapk.jar_, _testkey.pk8_ and _testkey.x509.pem_ in _signapk_ folder
-  * if you use another CERT, you need adjust _signapk.sh_
+* have [Java][] installed
+* Download [Apktool][], place _apktool.jar_ in _jar_ folder
+* Download [smali][], place _baksmali.jar_ and _smali.jar_ in _jar_ folder
+* place signapk stuff _signapk.jar_ in _jar_ folder, _testkey.pk8_ and _testkey.x509.pem_ in _security_ folder
+    * if you use another CERT, you need modify _signapk.sh_
 
 
 Usage
 ------------
 
-* unpack .apk using `./apk.sh file-name-without-suffix`
+* unpack .apk using `./apk.sh file-name.apk`
 * remove ads, take com.google.ads for example
-  * delete _file-name-without-suffix/smali/com/google/ads_
-  * run `./smali_clean.sh file-name-without-suffix com.google.ads`
+  * delete _file-name/smali/com/google/ads_
+  * run `./smali_clean.sh file-name com.google.ads`
   * take a look at commented lines and the console output
 * more editing...
-* repack using `./apk.sh file-name-without-suffix`
-* if packed succ, install _out/file-name-without-suffixbs.apk_ and have a test
+* repack using `./apk.sh file-name`
+* if packed succ, install _out/file-name-debug.apk_ and have a test
 
+[Java]: https://www.java.com/getjava/
+[Apktool]: https://bitbucket.org/iBotPeaches/apktool/downloads
+[smali]: https://bitbucket.org/JesusFreke/smali/downloads
