@@ -13,16 +13,13 @@
 #  1. add baksmali/smali support
 
 
-smali () {
-	java -jar "`dirname $0`/smali.jar" "$@"
-}
+readonly PROGDIR="$(cd `dirname $0`;pwd)"
+readonly OUT="${PROGDIR}/out"
 
-baksmali () {
-	java -jar "`dirname $0`/baksmali.jar" "$@"
-}
-
-apktool () {
-	java -jar "`dirname $0`/apktool.jar" "$@"
+jar () {
+	local jar="${PROGDIR}/jar/$1.jar"
+	shift
+	java -jar "${jar}" "$@"
 }
 
 unpackandundex () {
@@ -32,26 +29,26 @@ unpackandundex () {
 	echo unpack: "$1.apk"
 	unzip "$1.apk" classes.dex -d "$1"
 	echo undex: "$1/classes.dex"
-	baksmali --output "$1/smali" "$1/classes.dex"
+	jar baksmali --output "$1/smali" "$1/classes.dex"
 }
 
 redexandpack () {
 	[ ! -e "$1" ] && return
 
 	echo redex: "$1/smali"
-	smali --output "$1/classes.dex" -- "$1/smali"
+	jar smali --output "$1/classes.dex" -- "$1/smali"
 
-	echo pack: "out/${1}b.apk"
-	cp --force "${1}.apk" "out/${1}b.zip"
-	( cd $1 && zip -u "../out/${1}b.zip" classes.dex )
-	mv --force "out/${1}b.zip" "out/${1}b.apk"
+	echo pack: "${OUT}/${1}-unsigned.apk"
+	cp --force "${1}.apk" "${OUT}/${1}-unsigned.zip"
+	( cd $1 && zip -u "${OUT}/${1}-unsigned.zip" classes.dex )
+	mv --force "${OUT}/${1}-unsigned.zip" "${OUT}/${1}-unsigned.apk"
 }
 
 decode () {
 	[ ! -e "$1.apk" ] && return
 
 	echo decode apk: "$1.apk"
-	apktool decode -f --keep-broken-res "$1.apk" "$1"
+	jar apktool decode --force --keep-broken-res --output "$1" "$1.apk"
 
 	# if decode failed, try baksmali.jar
 	if [ ! -e "$1/apktool.yml" ] ; then
@@ -64,7 +61,7 @@ framework () {
 	[ ! -e "$1" ] && return
 
 	echo install framework: $1
-	apktool install-framework $1
+	jar apktool install-framework $1
 }
 
 build () {
@@ -72,8 +69,8 @@ build () {
 
 	# is decoded by apktool.jar succ?
 	if [ -e "$1/apktool.yml" ] ; then
-		echo build apk: "out/${1}b.apk"
-		PATH=.:$PATH apktool build "$1" "out/${1}b.apk"
+		echo build apk: "${OUT}/${1}-unsigned.apk"
+		jar apktool build --output "${OUT}/${1}-unsigned.apk" "$1"
 	else
 		redexandpack $1
 	fi
@@ -82,26 +79,27 @@ build () {
 sign () {
 	if [ -e "$1" ] ; then
 		echo signing apk: "$1"
-		./signapk.sh "$1"
+		"${PROGDIR}/signapk.sh" "$@"
 	fi
 }
 
 buildandsign () {
+	[ ! -e "${OUT}" ] && mkdir "${OUT}"
+
 	build "$1"
-	sign "out/${1}b.apk"
+	sign "${OUT}/${1}-unsigned.apk" "${OUT}/${1}-unaligned.apk"
+	zipalign -f -p 4 "${OUT}/${1}-unaligned.apk" "${OUT}/${1}-debug.apk"
 }
-
-
-[ ! -e out ] && mkdir out
 
 
 if [ -n "$1" ] ; then
 	# batch decode and rebuild
 	while [ -n "$1" ] ; do
-		if [ -e "$1" ] ; then
-			buildandsign $1
-		elif [ -e "$1.apk" ] ; then
-			decode $1
+		apk="${1%\.*}"
+		if [ -e "${apk}" ] ; then
+			buildandsign "${apk}"
+		elif [ -e "$1" ] ; then
+			decode "${apk}"
 		fi
 		# next apk
 		shift
@@ -128,9 +126,9 @@ else
 		1*) read -p "enter apk name: " apk ;;
 		2*) [ -n "$apk" ] && decode "$apk" ;;
 		3*) [ -n "$apk" ] && build "$apk" ;;
-		4*) [ -n "$apk" ] && sign "out/${apk}b.apk" ;;
+		4*) [ -n "$apk" ] && sign "${OUT}/${apk}-unsigned.apk" "${OUT}/${apk}-unaligned.apk" ;;
 		5*) [ -n "$apk" ] && buildandsign "$apk" ;;
-		6*) [ -e "out/${apk}bs.apk" ] && adb install -r "out/${apk}bs.apk" ;;
+		6*) [ -e "${OUT}/${apk}-debug.apk" ] && adb install -r "${OUT}/${apk}-debug.apk" ;;
 		7*) [ -e framework-res.apk ] && framework framework-res.apk ;;
 		8*) [ -n "$apk" ] && rm -rf "$apk" ;;
 		0*) exit 0 ;;
