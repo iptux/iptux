@@ -1,6 +1,7 @@
 # ApkBox2: edit .apk file more easily (shell version)
 
 * apk.sh:		unpack and repack .apk in one call
+* dex2jar.sh:		wrapper for dex2jar
 * signapk.sh:		wrapper for signapk.jar
 * smali_clean.sh:	clean some class refer in smali folder
 
