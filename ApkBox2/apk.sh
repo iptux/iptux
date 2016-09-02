@@ -22,6 +22,10 @@ jar () {
 	java -jar "${jar}" "$@"
 }
 
+jd_gui() {
+	jar jd-gui "$@" &
+}
+
 unpackandundex () {
 	[ ! -e "$1.apk" ] && return
 	[ -e "$1" ] && rm -rf "$1"
@@ -99,7 +103,12 @@ if [ -n "$1" ] ; then
 		if [ -e "${apk}" ] ; then
 			buildandsign "${apk}"
 		elif [ -e "$1" ] ; then
-			decode "${apk}"
+			ext="${1##*\.}"
+			if [ "${ext}" = jar ] ; then
+				jd_gui "$1"
+			else
+				decode "${apk}"
+			fi
 		fi
 		# next apk
 		shift
