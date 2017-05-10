@@ -2,3 +2,4 @@ DNSDynamic.pyw		python client for DNSDynamic.org
 coursera.py		download videos from coursera.org
 mplayer.py		mplayer python wrapper
 lg_kdz.py		Get Latest LGE Cell Phone Firmware
+waveform.py		generate testing waveform in .wav format
