@@ -75,11 +75,12 @@ class Waveform(object):
 		seg = 1024
 		fb = [None] * seg * self.nchannels
 		N = int(t * self.framerate)
-		for n in xrange(0, N, seg):
-			for i in xrange(seg):
+		for n in xrange(0, N + 1, seg):
+			count = min(seg, N + 1 - n)
+			for i in xrange(count):
 				v = self._frame(n + i)
 				fb[i * self.nchannels : (i + 1) * self.nchannels] = [v] * self.nchannels
-			wav.writeframesraw(''.join(fb))
+			wav.writeframesraw(''.join(fb[:count * self.nchannels]))
 		wav.writeframes('')
 		wav.close()
 
